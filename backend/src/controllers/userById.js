@@ -1,7 +1,7 @@
-import { Request, Response, NextFunction } from 'express';
-import User from "../models/user";
+const User = require("../models/user");
 
-export const userById = (req: Request | any, res: Response, next: NextFunction, id: any) => {
+exports.userById = (req, res, next, id) => {
+  console.log(User)
 
   User.findById(id).exec((err, user) => {
     if (err || !user) {

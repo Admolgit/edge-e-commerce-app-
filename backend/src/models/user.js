@@ -1,10 +1,9 @@
-import mongoose from "mongoose";
+const mongoose = require('mongoose');
 const uuid = require("uuid");
-import jwt from "jsonwebtoken";
+const jwt = require("jsonwebtoken");
 // import crypto from "crypto";
 
 uuid.v1();
-console.log(uuid.v1());
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -51,4 +50,4 @@ userSchema.methods.generateAuthToken = async function() {
 
 let User = mongoose.model("User", userSchema);
 
-export default User;
+module.exports = User;

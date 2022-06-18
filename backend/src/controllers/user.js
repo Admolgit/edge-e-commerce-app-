@@ -1,16 +1,16 @@
-import { Request, Response, NextFunction } from "express";
-import bcrypt from "bcryptjs";
-import dotenv from "dotenv";
-import jwt from "jsonwebtoken";
-import expressJwt from "express-jwt"; // Authorization middleware
-import { validate } from "./inputValidator";
-import User from "../models/user";
+
+const bcrypt = require("bcryptjs");
+const dotenv = require("dotenv");
+const jwt = require("jsonwebtoken");
+const expressJwt = require("express-jwt"); // Authorization middleware
+const { validate } = require("../Auth/inputValidator");
+const User = require("../models/user");
 
 dotenv.config();
 
-export const signup = async (req: Request, res: Response, next: NextFunction) => {
+exports.signup = async (req, res, next) => {
 
-  let body: any = req.body;
+  let body = req.body;
   let user = await User.findOne({ email: body.email });
 
   if (user) {
@@ -39,8 +39,8 @@ export const signup = async (req: Request, res: Response, next: NextFunction) =>
   
 }
 
-export const signin
-= async (req: Request, res: Response) => {
+exports.signin
+= async (req, res) => {
 
   try {
 
@@ -59,12 +59,12 @@ export const signin
     res.cookie("t", token)
 
     return res.status(200).json({token, user})
-  } catch (error: any) {
+  } catch (error) {
     return res.status(409).json(error.message);
   }
 }
 
-export const Auth = (req: Request | any, res: Response, next: NextFunction) => {
+exports.Auth = (req, res, next) => {
   let token;
 
   if (req.headers.authorization && req.headers.authorization.startsWith("Bearer ")) {
@@ -72,13 +72,13 @@ export const Auth = (req: Request | any, res: Response, next: NextFunction) => {
 
     try {
       // Using Config module to read token validities.
-      const decoded: any = jwt.verify(token, process.env.JWT_SECRET as string);
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-      const user: any = User.findById(decoded.id).select('-password');
+      const user = User.findById(decoded.id).select('-password');
 
       req.user = user;
 
-      const {id, name}:any = decoded;
+      const {id, name} = decoded;
       
       req.user = { id, name }
 
@@ -100,7 +100,7 @@ export const Auth = (req: Request | any, res: Response, next: NextFunction) => {
   // next()
 }
 
-export const signout = (req: Request | any, res: Response, next: NextFunction) => {
+exports.signout = (req, res, next) => {
   
   res.clearCookie('t')
   return res.status(200).json({
@@ -109,8 +109,8 @@ export const signout = (req: Request | any, res: Response, next: NextFunction) =
 
 }
 
-export const isAuth = (req: Request | any, res: Response, next: NextFunction) => {
-  let user = req.profile && req.profile._id && req.user === req.user._id;
+exports.isAuth = (req, res, next, id) => {
+  let user = req.profile === req.user.id;
   if(!user) {
     return res.status(403).json({error: "Access denied"});
   }
@@ -118,7 +118,7 @@ export const isAuth = (req: Request | any, res: Response, next: NextFunction) =>
   next();
 }
 
-export const isAdmin = (req: Request | any, res: Response, next: NextFunction) => {
+exports.isAdmin = (req, res, next) => {
   if(req.profile.role === 0) {
     return res.status(403).json({error: "Access denied, You are not an admin"});
   }

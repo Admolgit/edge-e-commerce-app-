@@ -1,6 +1,6 @@
-import mongoose from "mongoose";
+const mongoose = require('mongoose');
 
-const { ObjectId } = mongoose.Schema.Types;
+const { ObjectId } = mongoose.Schema;
 
 const productSchema = new mongoose.Schema({
   name: {
@@ -31,11 +31,10 @@ const productSchema = new mongoose.Schema({
   quantity: {
     type: Number,
   },
-  image: {
-    data: Buffer,
-    required: true,
-    contentType: String,
-  },
+  // image: {
+  //   data: Buffer,
+  //   contentType: String,
+  // },
   shipping: {
     type: Boolean,
     default: false,
@@ -44,6 +43,6 @@ const productSchema = new mongoose.Schema({
   timestamps: true,
 });
 
-let User = mongoose.model("Product", productSchema);
+let Product = mongoose.model("Product", productSchema);
 
-export default User;
+module.exports = Product;
