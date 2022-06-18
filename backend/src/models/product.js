@@ -31,10 +31,14 @@ const productSchema = new mongoose.Schema({
   quantity: {
     type: Number,
   },
-  // image: {
-  //   data: Buffer,
-  //   contentType: String,
-  // },
+  image: {
+    data: Buffer,
+    contentType: String,
+  },
+  sold: {
+    type: Number,
+    default: 0
+  },
   shipping: {
     type: Boolean,
     default: false,

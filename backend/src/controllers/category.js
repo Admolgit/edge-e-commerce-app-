@@ -54,8 +54,11 @@ exports.deleteProduct = (req, res) => {
 }
 
 exports.list = (req, res) => {
+  console.log(Category.find())
   Category.find().exec((err, lists) => {
-    if(err) return res.status(400).json({error: err.message})
+    if(err) {
+      return res.status(400).json({message: "Category not found"})
+    }
+    res.json(lists);
   })
-  res.json(lists);
 }

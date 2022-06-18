@@ -7,7 +7,7 @@ const {
   read,
   deleteProduct,
   updateProduct,
-  list,
+  list
 } = require("../controllers/category");
 const { Auth, isAdmin, isAuth } = require("../controllers/user");
 const { userById } = require("../controllers/userById");
