@@ -17,6 +17,7 @@ exports.create = async (req, res, next) => {
   try {
     let category = new Category(req.body);
     let categoryInfo = await category.save();
+    consol.log(categoryInfo, "categoryInfo", category)
     res.status(201).json({
       categoryInfo
     });
