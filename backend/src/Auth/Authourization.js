@@ -25,8 +25,7 @@ const Auth = (req, res, next) => {
     }
 
   }
-
-
+  
   if(!token) {
     return res.status(401).json('You are not authorized');
   }

@@ -6,37 +6,83 @@ const jwt = require("jsonwebtoken");
 uuid.v1();
 
 const userSchema = new mongoose.Schema({
-  name: {
+  // name: {
+  //   type: String,
+  //   required: true,
+  //   trim: true,
+  //   minlength: 3,
+  //   maxlength: 32,
+  // },
+  // email: {
+  //   type: String,
+  //   required: true,
+  //   trim: true,
+  //   unique: true,
+  // },
+  // password: {
+  //   type: String,
+  //   required: true,
+  // },
+  // about: {
+  //   type: String,
+  //   trim: true,
+  // },
+  // salt: {
+  //   type: String,
+  // },
+  // role: {
+  //   type: Number,
+  //   default: 0,
+  // },
+  // history: {
+  //   type: Array,
+  //   default: [],
+  // },
+  firstName: {
     type: String,
-    required: true,
+    maxlength: 128,
+    index: true,
     trim: true,
-    minlength: 3,
-    maxlength: 32,
+    require: true,
+  },
+  lastName: {
+    type: String,
+    maxlength: 128,
+    index: true,
+    trim: true,
+    require: true,
+  },
+  userName: {
+    type: String,
+    maxlength: 128,
+    index: true,
+    trim: true,
+    require: true,
+  },
+  phoneNumber: {
+    type: String,
+    require: true,
   },
   email: {
     type: String,
-    required: true,
-    trim: true,
-    unique: true,
+    require: true,
+  },
+  dateOfBirth: {
+    type: Date,
+    // require: true,
   },
   password: {
     type: String,
-    required: true,
+    minlength: 8,
+    maxlength: 128,
   },
-  about: {
-    type: String,
-    trim: true,
+  terms: {
+    type: Boolean,
+    default: false,
   },
-  salt: {
-    type: String,
-  },
-  role: {
-    type: Number,
-    default: 0,
-  },
-  history: {
-    type: Array,
-    default: [],
+  rememberMe: {
+    type: Boolean,
+    default: false,
   },
 }, {
   timestamps: true,

@@ -17,9 +17,8 @@ exports.create = async (req, res, next) => {
   try {
     let category = new Category(req.body);
     let categoryInfo = await category.save();
-    consol.log(categoryInfo, "categoryInfo", category)
     res.status(201).json({
-      categoryInfo
+      categoryInfo: categoryInfo,
     });
   }
   catch (error) {
@@ -55,11 +54,14 @@ exports.deleteProduct = (req, res) => {
 }
 
 exports.list = (req, res) => {
-  console.log(Category.find())
-  Category.find().exec((err, lists) => {
-    if(err) {
-      return res.status(400).json({message: "Category not found"})
-    }
-    res.json(lists);
-  })
+  const categories = Category.find();
+
+  res.status(200).json({lists: categories});
+
+  // .exec((err, lists) => {
+  //   if(err) {
+  //     return res.status(400).json({message: "Category not found"})
+  //   }
+  //   res.status(200).json({lists: lists});
+  // })
 }

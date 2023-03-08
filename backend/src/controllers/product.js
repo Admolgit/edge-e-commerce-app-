@@ -16,6 +16,8 @@ const productById = (req, res, next, id) => {
   });
 };
 
+// console.log(formidable.IncomingForm);
+
 const read = (req, res) => {
   req.product.image = undefined;
   return res.status(200).json(req.product);
@@ -24,16 +26,16 @@ const read = (req, res) => {
 // Create product and upload file
 
 const createProduct = (req, res) => {
-  console.log("Creating product");
 
+  // console.log(req.body)
+  
   // To handle file upload
   let form = new formidable.IncomingForm();
 
-  form.keepExtensions = true;
+  form.options.keepExtensions = true;
 
-  form.parse =
-    (req,
-    (err, fields, files) => {
+  form.parse(req, async (err, fields, files) => {
+
       if (err) {
         return res.status(400).json({
           error: "Image could not be uploaded",
@@ -43,7 +45,7 @@ const createProduct = (req, res) => {
       // Checking for all fields
       const { name, description, price, category, quantity, shipping } = fields;
 
-      if (!name || description || price || category || quantity || shipping) {
+      if (!name || !description || !price || !category || !quantity || !shipping) {
         return res.status(400).json({ error: "All fields are required" });
       }
 
@@ -51,26 +53,19 @@ const createProduct = (req, res) => {
 
       let product = new Product(fields);
 
-      // console.log(product);
-
       if (files.image) {
-        if (files.image > 1000000) {
+        if (files.image.size > 1000000) {
           return res.status(400).json({
             error: "Image should not be greater than 1mb",
           });
         }
-        product.image.data = fs.readFileSync(files.image.path);
-        product.image.contentType = files.image.type;
+        product.image = fs.readFileSync(files.image.filepath);
+        product.image.contentType = files.image.mimetype;
       }
 
-      Product.save((err, product) => {
-        if (err) {
-          return res.status(400).json({
-            error: "Product could not be saved to database",
-          });
-        }
-        res.status(201).json(product);
-      });
+      let createdProduct = await product.save();
+
+      res.status(201).json({ product: createdProduct });
     });
 };
 
