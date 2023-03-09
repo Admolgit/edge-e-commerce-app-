@@ -26,47 +26,52 @@ const read = (req, res) => {
 // Create product and upload file
 
 const createProduct = (req, res) => {
-
   // console.log(req.body)
-  
+
   // To handle file upload
   let form = new formidable.IncomingForm();
 
   form.options.keepExtensions = true;
 
   form.parse(req, async (err, fields, files) => {
+    if (err) {
+      return res.status(400).json({
+        error: "Image could not be uploaded",
+      });
+    }
 
-      if (err) {
+    // Checking for all fields
+    const { name, description, price, category, quantity, shipping } = fields;
+
+    if (
+      !name ||
+      !description ||
+      !price ||
+      !category ||
+      !quantity ||
+      !shipping
+    ) {
+      return res.status(400).json({ error: "All fields are required" });
+    }
+
+    // handling the file part
+
+    let product = new Product(fields);
+
+    if (files.image) {
+      if (files.image.size > 1000000) {
         return res.status(400).json({
-          error: "Image could not be uploaded",
+          error: "Image should not be greater than 1mb",
         });
       }
+      product.image = fs.readFileSync(files.image.filepath);
+      product.image.contentType = files.image.mimetype;
+    }
 
-      // Checking for all fields
-      const { name, description, price, category, quantity, shipping } = fields;
+    let createdProduct = await product.save();
 
-      if (!name || !description || !price || !category || !quantity || !shipping) {
-        return res.status(400).json({ error: "All fields are required" });
-      }
-
-      // handling the file part
-
-      let product = new Product(fields);
-
-      if (files.image) {
-        if (files.image.size > 1000000) {
-          return res.status(400).json({
-            error: "Image should not be greater than 1mb",
-          });
-        }
-        product.image = fs.readFileSync(files.image.filepath);
-        product.image.contentType = files.image.mimetype;
-      }
-
-      let createdProduct = await product.save();
-
-      res.status(201).json({ product: createdProduct });
-    });
+    res.status(201).json({ product: createdProduct });
+  });
 };
 
 const deleteProduct = (req, res) => {
@@ -151,42 +156,41 @@ const list = (req, res) => {
     .sort([[sortBy, order]])
     .limit(limit)
     .exec((err, data) => {
-
-      if(err) {
-        return res.status(400).json({ error: err.message })
+      if (err) {
+        return res.status(400).json({ error: err.message });
       }
 
-      res.json(data)
-    })
+      res.json(data);
+    });
 };
 
-//find products based on the req product category
+// find products based on the req product category
 // other product that has the same category will be returned
 
 const relatedProducts = (req, res) => {
   let limit = req.query.limit ? parseInt(req.query.limit) : 6;
 
-  Product.find({_id: {$ne: req.product}, category: req.product.category})
-  .limit(limit)
-  .populate("category", "_id name")
-  .exec((err, products) => {
-    if(err) {
-      return res.status(400).json({ error: err.message })
-    }
+  Product.find({ _id: { $ne: req.product }, category: req.product.category })
+    .limit(limit)
+    .populate("category", "_id name")
+    .exec((err, products) => {
+      if (err) {
+        return res.status(400).json({ error: err.message });
+      }
 
-    res.json(products)
-  })
-}
+      res.json(products);
+    });
+};
 
 const listCategories = (req, res) => {
   Product.distinct("category", {}, (err, categories) => {
-    if(err) {
-      return res.status(400).json({ error: err.message })
+    if (err) {
+      return res.status(400).json({ error: err.message });
     }
 
-    res.json(categories)
-  })
-}
+    res.json(categories);
+  });
+};
 
 /**
  * list products by search
@@ -196,9 +200,7 @@ const listCategories = (req, res) => {
  * we will make api request and show the products to users based on what he wants
  */
 
- 
 const listBySearch = (req, res) => {
-
   let order = req.body.order ? req.body.order : "desc";
   let sortBy = req.body.sortBy ? req.body.sortBy : "_id";
   let limit = req.body.limit ? parseInt(req.body.limit) : 100;
@@ -214,8 +216,8 @@ const listBySearch = (req, res) => {
         // gte -  greater than price [0-10]
         // lte - less than
         findArgs[key] = {
-            $gte: req.body.filters[key][0],
-            $lte: req.body.filters[key][1]
+          $gte: req.body.filters[key][0],
+          $lte: req.body.filters[key][1],
         };
       } else {
         findArgs[key] = req.body.filters[key];
@@ -232,23 +234,23 @@ const listBySearch = (req, res) => {
     .exec((err, data) => {
       if (err) {
         return res.status(400).json({
-            error: "Products not found"
+          error: "Products not found",
         });
       }
       res.json({
         size: data.length,
-        data
+        data,
       });
     });
 };
 
 const productImage = (req, res, next, id) => {
-  if(req.product.image.data) {
-    res.set("Content-Type", req.product.image.contentType)
-    return res.json(req.product.image.data)
+  if (req.product.image.data) {
+    res.set("Content-Type", req.product.image.contentType);
+    return res.json(req.product.image.data);
   }
   next();
-}
+};
 
 module.exports = {
   createProduct,
