@@ -58,10 +58,4 @@ exports.list = (req, res) => {
 
   res.status(200).json({lists: categories});
 
-  // .exec((err, lists) => {
-  //   if(err) {
-  //     return res.status(400).json({message: "Category not found"})
-  //   }
-  //   res.status(200).json({lists: lists});
-  // })
 }
