@@ -117,8 +117,6 @@ const updatedProduct = (req, res) => {
       let product = req.product;
       product = _.extend(product, fields);
 
-      // console.log(product);
-
       if (files.image) {
         if (files.image > 1000000) {
           return res.status(400).json({
@@ -206,9 +204,6 @@ const listBySearch = (req, res) => {
   let limit = req.body.limit ? parseInt(req.body.limit) : 100;
   let skip = parseInt(req.body.skip);
   let findArgs = {};
-
-  // console.log(order, sortBy, limit, skip, req.body.filters);
-  // console.log("findArgs", findArgs);
 
   for (let key in req.body.filters) {
     if (req.body.filters[key].length > 0) {
