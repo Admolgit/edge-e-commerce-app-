@@ -4,13 +4,13 @@ const _ = require("lodash");
 const Product = require("../models/product");
 
 const productById = (req, res, next, id) => {
-  Product.findById(id).exec((err, product) => {
+  Product.findById({_id: id}).exec((err, product) => {
+    console.log(id, err);
     if (err || !product) {
       return res.status(400).json({
         error: "Product not found",
       });
     }
-
     req.product = product;
     next();
   });
@@ -89,7 +89,6 @@ const deleteProduct = (req, res) => {
 };
 
 const updatedProduct = (req, res) => {
-  console.log("Creating product");
 
   // To handle file upload
   let form = new formidable.IncomingForm();

@@ -1,5 +1,5 @@
 const express = require("express");
-var router = express.Router();
+const router = express.Router();
 
 const { Auth, isAdmin, isAuth } = require("../controllers/user");
 const {
@@ -19,7 +19,7 @@ const { userById } = require("../controllers/userById");
 router.get("/product/:productId", read);
 router.post("/product/create/:id", createProduct);
 router.delete("/product/:productId/:id", deleteProduct);
-router.delete("/product/:productId/:id", updatedProduct);
+router.put("/product/:productId/:id", updatedProduct);
 router.get("/products", list);
 router.get("/products/related/:productId", relatedProducts)
 router.get("/products/categories", listCategories);

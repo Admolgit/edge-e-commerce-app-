@@ -17,13 +17,12 @@ dotenv.config();
 const app = express();
 
 // This is the middle ware
-app.use(morgan('dev'));
+app.use(express.json());
+app.use(morgan("dev"));
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(expressValidator());
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
-
-app.use(express.json());
 app.use(cors());
 
 // This is the route middle ware
@@ -31,7 +30,6 @@ app.use("/", router);
 app.use("/", userRouter);
 app.use("/", categoryRouter);
 app.use("/", productRouter);
-
 
 const PORT = process.env.PORT || 4000;
 
@@ -42,4 +40,4 @@ mongoose
 
 app.listen(PORT, () => console.log(`Edge server running on ${PORT}`));
 
-exports.app;
+module.exports = app;

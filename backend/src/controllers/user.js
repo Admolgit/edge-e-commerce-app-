@@ -9,7 +9,6 @@ dotenv.config();
 
 exports.signup = async (req, res, next) => {
   let body = req.body;
-  console.log(body);
   let user = await User.findOne({ email: body.email });
 
   if (user) {
@@ -25,11 +24,11 @@ exports.signup = async (req, res, next) => {
   try {
     let userInfo = await uniqueUser.save();
 
-    res.status(200).json({
+    return res.status(201).send({
       userInfo,
     });
   } catch (error) {
-    return res.status(400).json({
+    return res.status(500).json({
       message: "Something went wrong",
     });
   }

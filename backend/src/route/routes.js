@@ -8,7 +8,7 @@ router.post('/signup', signup);
 router.post('/signin', signin);
 router.get('/signout', signout);
 
-router.get('/test', Auth, (req, res) => {
+router.get('/test', (req, res) => {
   res.send("Hello World");
 });
 

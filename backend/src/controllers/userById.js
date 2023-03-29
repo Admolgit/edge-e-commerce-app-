@@ -1,7 +1,8 @@
 const User = require("../models/user");
 
 exports.userById = (req, res, next, id) => {
-  User.findById(id).exec((err, user) => {
+  User.findById({_id: id}).exec((err, user) => {
+    console.log(id, err, "USERBYID")
     if (err || !user) {
       return res.status(400).json({
         message: "User not found",
