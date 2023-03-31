@@ -17,7 +17,8 @@ describe("POST /signup", () => {
     test("should return a 201 status code for new user, if user exist return 400", async () => {
       const res = await request(app).post("/signup").send({
         name: "test",
-        email: "testss",
+        // You have to change the password at every test to pass 201 test.
+        email: "testssd",
         password: "test"
       })
       if(res.statusCode === 201) {

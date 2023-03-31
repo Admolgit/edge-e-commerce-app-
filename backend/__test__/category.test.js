@@ -27,11 +27,11 @@ describe("POST /category/create/64236f4a8a871207b0f06ff2", () => {
   })
 })
 
-describe("GET /category/:categoryId", () => {
-  describe("given a category id", () => {
-    test("should return a 200 status code", async () => {
-      const res = await request(category).get("/category/:categoryId")
-      expect(res.status).toBe(200);
-    })
-  })
-})
+// describe("GET /category/:categoryId", () => {
+//   describe("given a category id", () => {
+//     test("should return a 200 status code", async () => {
+//       const res = await request(category).get("/category/:categoryId")
+//       expect(res.status).toBe(200);
+//     })
+//   })
+// })

@@ -16,8 +16,6 @@ const productById = (req, res, next, id) => {
   });
 };
 
-// console.log(formidable.IncomingForm);
-
 const read = (req, res) => {
   req.product.image = undefined;
   return res.status(200).json(req.product);
