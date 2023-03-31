@@ -1,6 +1,7 @@
 const request = require("supertest");
 const mongoose = require("mongoose");
 const app = require("../app");
+const category = require("../src/route/category");
 require("dotenv").config();
 
 /* Connecting to the database before each test. */
@@ -26,12 +27,10 @@ describe("POST /category/create/64236f4a8a871207b0f06ff2", () => {
   })
 })
 
-describe("GET /category/:id", () => {
-  describe("not given a name", () => {
+describe("GET /category/:categoryId", () => {
+  describe("given a category id", () => {
     test("should return a 200 status code", async () => {
-      const res = await request(app).post("/category/:id").send({
-
-      })
+      const res = await request(category).get("/category/:categoryId")
       expect(res.status).toBe(200);
     })
   })

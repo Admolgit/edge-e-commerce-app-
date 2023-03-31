@@ -1,19 +1,30 @@
 const Category = require("../models/category");
 
-exports.categoryById = (req, res, next, id) => {
-  Category.findById(id).exec((err, category) => {
-    if (err || !category) {
-      return res.status(400).json({
-        error: "Category does not exist",
-      });
-    }
+module.exports.categoryById = async (req, res, next, id) => {
+  const { categoryId } = req.params
+  const category = await Category.findById({ _id: categoryId });
 
-    req.category = category;
-    next();
-  });
+  // console.log(`Category`, category)
+
+  if (!category) {
+    return res.status(404).json({
+      error: "Category does not exist",
+    });
+  }
+
+  // .exec((err, category) => {
+  //   if (err || !category) {
+  //     return res.status(404).json({
+  //       error: "Category does not exist",
+  //     });
+  //   }
+
+  req.category = category;
+  next();
+  // });
 };
 
-exports.create = async (req, res, next) => {
+module.exports.create = async (req, res, next) => {
   try {
     if (!req.body) {
       return res.status(400).json({
@@ -35,18 +46,18 @@ exports.create = async (req, res, next) => {
   }
 };
 
-exports.read = (req, res) => {
+module.exports.read = (req, res) => {
   try {
     res.json(req.category);
-  } catch(error) {
+  } catch (error) {
     res.status(500).json({
       message: "Something went wrong",
       error: error.message,
-    })
+    });
   }
 };
 
-exports.updateProduct = (req, res) => {
+module.exports.updateProduct = (req, res) => {
   const category = req.category;
   category.name = req.body.name;
 
@@ -59,7 +70,7 @@ exports.updateProduct = (req, res) => {
   });
 };
 
-exports.deleteProduct = (req, res) => {
+module.exports.deleteProduct = (req, res) => {
   const category = req.category;
 
   category.remove((err, category) => {
@@ -70,16 +81,16 @@ exports.deleteProduct = (req, res) => {
   });
 };
 
-exports.list = (req, res) => {
+module.exports.list = (req, res) => {
   try {
     const categories = Category.findAll();
-    console.log(categories)
+    console.log(categories);
 
     return res.status(200).json({ lists: categories });
   } catch (err) {
-    return res.status(500).json({ 
+    return res.status(500).json({
       error: err.message,
-      message: "Something went wrong"
+      message: "Something went wrong",
     });
   }
 };
