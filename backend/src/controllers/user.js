@@ -9,6 +9,12 @@ dotenv.config();
 
 exports.signup = async (req, res, next) => {
   let body = req.body;
+  const {name, email, password} = req.body;
+
+  if(!name || !email || !password) {
+    throw new Error("All fields must be filled")
+  };
+
   let user = await User.findOne({ email: body.email });
 
   if (user) {
@@ -38,6 +44,12 @@ exports.signin = async (req, res) => {
   try {
     validate(req.body);
 
+    const {email, password} = req.body;
+
+    if(!email || !password) {
+      throw new Error("All fields must be filled")
+    }
+
     let user = await User.findOne({ email: req.body.email });
 
     if (!user) return res.status(400).json("Invalid email or password");
@@ -59,6 +71,14 @@ exports.signin = async (req, res) => {
     return res.status(409).json(error.message);
   }
 };
+
+exports.getUsers = async (req, res) => {
+  const users = await User.find({})
+  res.status(200).json({
+    message: 'Users fetched',
+    users: users
+  })
+}
 
 exports.Auth = (req, res, next) => {
   let token;

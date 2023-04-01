@@ -2,7 +2,7 @@ const express = require('express');
 var router = express.Router();
 
 // const { userSignupInputValidator }  = require("../Auth/inputValidator");
-const { Auth, isAdmin, isAuth } = require("../controllers/user")
+const { Auth, isAdmin, isAuth, getUsers } = require("../controllers/user")
 
 const { userById, read, update } = require("../controllers/userById");
 
@@ -13,6 +13,7 @@ router.get('/:id', (req, res, next) => {
 });
 router.get("/user/:id", read)
 router.put("/user/:id", update)
+router.get("/users", isAuth, getUsers)
 
 router.param("id", userById);
 

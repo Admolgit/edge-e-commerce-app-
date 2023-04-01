@@ -1,27 +1,16 @@
 const Category = require("../models/category");
 
-module.exports.categoryById = async (req, res, next, id) => {
-  const { categoryId } = req.params
-  const category = await Category.findById({ _id: categoryId });
+module.exports.categoryById = (req, res, next, id) => {
+  Category.findById({ _id: id }).exec((err, category) => {
+    if (err || !category) {
+      return res.status(404).json({
+        error: "Category does not exist",
+      });
+    }
 
-  // console.log(`Category`, category)
-
-  if (!category) {
-    return res.status(404).json({
-      error: "Category does not exist",
-    });
-  }
-
-  // .exec((err, category) => {
-  //   if (err || !category) {
-  //     return res.status(404).json({
-  //       error: "Category does not exist",
-  //     });
-  //   }
-
-  req.category = category;
-  next();
-  // });
+    req.category = category;
+    next();
+  });
 };
 
 module.exports.create = async (req, res, next) => {
@@ -83,7 +72,7 @@ module.exports.deleteProduct = (req, res) => {
 
 module.exports.list = (req, res) => {
   try {
-    const categories = Category.findAll();
+    const categories = Category.find({});
     console.log(categories);
 
     return res.status(200).json({ lists: categories });

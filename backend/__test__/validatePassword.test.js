@@ -29,6 +29,7 @@ test('return false given a password of 8 character or longer, but no numbers', (
 test('return false given a password of 8 character or longer with Uppercase, but no numbers', () => {
   expect(validatePassword('ABCDEFGH')).toBe(false);
 })
+
 test('return false given a password of 8 character or longer, but includes special character', () => {
   expect(validatePassword('ABCDEFG.')).toBe(false);
 })
