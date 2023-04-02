@@ -9,11 +9,11 @@ dotenv.config();
 
 exports.signup = async (req, res, next) => {
   let body = req.body;
-  const {name, email, password} = req.body;
+  const { name, email, password } = req.body;
 
-  if(!name || !email || !password) {
-    throw new Error("All fields must be filled")
-  };
+  if (!name || !email || !password) {
+    throw new Error("All fields must be filled");
+  }
 
   let user = await User.findOne({ email: body.email });
 
@@ -44,10 +44,10 @@ exports.signin = async (req, res) => {
   try {
     validate(req.body);
 
-    const {email, password} = req.body;
+    const { email, password } = req.body;
 
-    if(!email || !password) {
-      throw new Error("All fields must be filled")
+    if (!email || !password) {
+      throw new Error("All fields must be filled");
     }
 
     let user = await User.findOne({ email: req.body.email });
@@ -73,12 +73,21 @@ exports.signin = async (req, res) => {
 };
 
 exports.getUsers = async (req, res) => {
-  const users = await User.find({})
-  res.status(200).json({
-    message: 'Users fetched',
-    users: users
-  })
-}
+  try {
+    const users = await User.find({});
+    if (!users) return res.status(404).json({ message: "No users found" });
+    res.status(200).json({
+      message: "Users fetched",
+      dataLength: users.length,
+      users: users,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Something went wrong",
+      error: error.message,
+    });
+  }
+};
 
 exports.Auth = (req, res, next) => {
   let token;
@@ -90,7 +99,7 @@ exports.Auth = (req, res, next) => {
     token = req.headers.authorization.split(" ")[1];
 
     try {
-      // Using Config module to read token validities.
+      // Using json web token module to read token validities.
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
       const user = User.findById(decoded.id).select("-password");
@@ -110,8 +119,6 @@ exports.Auth = (req, res, next) => {
   if (!token) {
     return res.status(401).json("You are not authorized");
   }
-
-  // next()
 };
 
 exports.signout = (req, res, next) => {

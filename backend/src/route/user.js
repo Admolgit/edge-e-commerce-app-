@@ -11,9 +11,9 @@ router.get('/:id', (req, res, next) => {
     user: req.profile,
   })
 });
-router.get("/user/:id", read)
+router.get("/user/:id", isAuth, isAdmin, read)
 router.put("/user/:id", update)
-router.get("/users", isAuth, getUsers)
+router.get('/users/all', isAuth, isAdmin, getUsers)
 
 router.param("id", userById);
 

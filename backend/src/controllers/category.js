@@ -46,20 +46,21 @@ module.exports.read = (req, res) => {
   }
 };
 
-module.exports.updateProduct = (req, res) => {
+module.exports.updateCategory = (req, res) => {
   const category = req.category;
   category.name = req.body.name;
 
   category.save((err, category) => {
     if (err)
-      return res
-        .status(400)
-        .json({ message: "Something went wrong,category can not be updated." });
+      return res.status(400).json({
+        message: "Something went wrong,category can not be updated.",
+        error: err.message,
+      });
     res.json(category);
   });
 };
 
-module.exports.deleteProduct = (req, res) => {
+module.exports.deleteCategory = (req, res) => {
   const category = req.category;
 
   category.remove((err, category) => {
@@ -70,12 +71,15 @@ module.exports.deleteProduct = (req, res) => {
   });
 };
 
-module.exports.list = (req, res) => {
+module.exports.list = async (req, res) => {
   try {
-    const categories = Category.find({});
-    console.log(categories);
+    const categories = await Category.find({});
 
-    return res.status(200).json({ lists: categories });
+    return res.status(200).json({
+      message: "Categories fetched successfully",
+      listsLength: categories.length,
+      lists: categories,
+    });
   } catch (err) {
     return res.status(500).json({
       error: err.message,
