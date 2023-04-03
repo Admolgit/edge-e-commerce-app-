@@ -17,7 +17,7 @@ router.get("/category/:categoryId", isAuth, read);
 router.post("/category/create/:id", isAuth, create);
 router.put("/category/:categoryId/:id", isAuth, updateCategory);
 router.delete("/category/:categoryId/:id", isAuth, deleteCategory);
-router.get("/categories/all", list);
+router.get("/categories/all", isAuth, list);
 
 router.param("categoryId", categoryById);
 router.param("id", userById);

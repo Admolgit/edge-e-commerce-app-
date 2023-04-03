@@ -20,7 +20,7 @@ router.get("/product/:productId", read);
 router.post("/product/create/:id", createProduct);
 router.delete("/product/:productId/:id", deleteProduct);
 router.put("/product/:productId/:id", updatedProduct);
-router.get("/products", list);
+router.get("/products/all", list);
 router.get("/products/related/:productId", relatedProducts)
 router.get("/products/categories", listCategories);
 router.get("/product/image/:productId", productImage)

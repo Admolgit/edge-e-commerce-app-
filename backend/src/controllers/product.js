@@ -140,7 +140,7 @@ const updatedProduct = (req, res) => {
 // by arrival = /products?sortBy=createdAt&order=desc&limit=4
 // if no param was sent, all product should be returned
 
-const list = (req, res) => {
+const list = (req, res, _id) => {
   let order = req.query.order ? req.query.order : "asc";
   let sortBy = req.query.sortBy ? req.query.sortBy : _id;
   let limit = req.query.limit ? parseInt(req.query.limit) : 6;
