@@ -1,10 +1,11 @@
 const fs = require("fs");
 const formidable = require("formidable");
+const cloudinary = require("cloudinary")
 const _ = require("lodash");
 const Product = require("../models/product");
 
 const productById = (req, res, next, id) => {
-  Product.findById({_id: id}).exec((err, product) => {
+  Product.findById({ _id: id }).exec((err, product) => {
     console.log(id, err);
     if (err || !product) {
       return res.status(400).json({
@@ -23,8 +24,8 @@ const read = (req, res) => {
 
 // Create product and upload file
 
-const createProduct = (req, res) => {
-  // console.log(req.body)
+const createProduct = async (req, res) => {
+  console.log(req.body)
 
   // To handle file upload
   let form = new formidable.IncomingForm();
@@ -38,37 +39,67 @@ const createProduct = (req, res) => {
       });
     }
 
-    // Checking for all fields
-    const { name, description, price, category, quantity, shipping } = fields;
+  // Checking for all fields
+  const {
+    name,
+    description,
+    price,
+    category,
+    quantity,
+    image,
+    sold,
+    shipping,
+  } = fields;
 
-    if (
-      !name ||
-      !description ||
-      !price ||
-      !category ||
-      !quantity ||
-      !shipping
-    ) {
-      return res.status(400).json({ error: "All fields are required" });
-    }
+  if (
+    !name ||
+    !description ||
+    !price ||
+    !category ||
+    !quantity ||
+    !sold ||
+    !shipping
+  ) {
+    return res.status(400).json({ error: "All fields are required" });
+  }
 
-    // handling the file part
+  const result = await cloudinary.uploader.upload(image, {
+    folder: "products",
+    // width: 300,
+    // crop: "scale"
+  });
 
-    let product = new Product(fields);
+  console.log(result)
 
-    if (files.image) {
-      if (files.image.size > 1000000) {
-        return res.status(400).json({
-          error: "Image should not be greater than 1mb",
-        });
-      }
-      product.image = fs.readFileSync(files.image.filepath);
-      product.image.contentType = files.image.mimetype;
-    }
+  // handling the file part
 
-    let createdProduct = await product.save();
+  // let product = new Product({
+  //   name,
+  //   description,
+  //   price,
+  //   category,
+  //   quantity,
+  //   image: {
+  //     public_id: result.public_id,
+  //     url: result.secure_url,
+  //   },
+  //   sold,
+  //   shipping,
+  // });
 
-    res.status(201).json({ product: createdProduct });
+  // // if (files.image) {
+  // //   if (files.image.size > 1000000) {
+  // //     return res.status(400).json({
+  // //       error: "Image should not be greater than 1mb",
+  // //     });
+  // //   }
+  // //   product.image = fs.readFileSync(files.image.filepath);
+  // //   product.image.contentType = files.image.mimetype;
+  // // }
+
+  // let createdProduct = await product.save();
+
+  // res.status(201).json({ product: createdProduct });
   });
 };
 
@@ -87,7 +118,6 @@ const deleteProduct = (req, res) => {
 };
 
 const updatedProduct = (req, res) => {
-
   // To handle file upload
   let form = new formidable.IncomingForm();
 

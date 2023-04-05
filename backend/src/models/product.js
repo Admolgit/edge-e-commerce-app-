@@ -1,51 +1,60 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const { ObjectId } = mongoose.Schema;
 
-const productSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-    trim: true,
-    minlength: 3,
-    maxlength: 32,
+const productSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+      trim: true,
+      minlength: 3,
+      maxlength: 32,
+    },
+    description: {
+      type: String,
+      required: true,
+      maxlength: 3200,
+    },
+    price: {
+      type: Number,
+      required: true,
+      min: 1,
+      max: 32,
+      trim: true,
+    },
+    category: {
+      type: ObjectId,
+      ref: "Category",
+      required: true,
+      maxlength: 32,
+    },
+    quantity: {
+      type: Number,
+    },
+    image: {
+      public_id: {
+        type: String,
+        required: true,
+      },
+      url: {
+        type: String,
+        required: true,
+      },
+    },
+    sold: {
+      type: Number,
+      default: 0,
+    },
+    shipping: {
+      type: Boolean,
+      default: false,
+    },
   },
-  description: {
-    type: String,
-    required: true,
-    maxlength: 3200,
-  },
-  price: {
-    type: Number,
-    required: true,
-    min: 1,
-    max: 32,
-    trim: true,
-  },
-  category: {
-    type: ObjectId,
-    ref: "Category",
-    required: true,
-    maxlength: 32,
-  },
-  quantity: {
-    type: Number,
-  },
-  image: {
-    data: Buffer,
-    contentType: String,
-  },
-  sold: {
-    type: Number,
-    default: 0
-  },
-  shipping: {
-    type: Boolean,
-    default: false,
-  },
-}, {
-  timestamps: true,
-});
+  {
+    timestamps: true,
+  }
+);
 
 let Product = mongoose.model("Product", productSchema);
 
